@@ -96,7 +96,7 @@ public class LoaderCloset implements LoaderManager.LoaderCallbacks<LoaderResult>
         int loaderId = receiver.getNextLoaderId();
         if (serialLoaders.containsKey(loaderId)) {
             Loader loader = serialLoaders.get(loaderId).first;
-            ((OneShotLoader) loader).setTakeOver(takeover);
+            ((OneShotLoader) loader).setPreviousResult(takeover);
             loaderManager.initLoader(loaderId, null, this);
         } else {
             uiThreadSerialReceiver.finishAllLoader();

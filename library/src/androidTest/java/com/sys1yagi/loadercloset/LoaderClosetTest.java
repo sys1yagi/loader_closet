@@ -25,7 +25,7 @@ public class LoaderClosetTest extends ActivityUnitTestCase<MockActivity> {
 
         setActivityContext(context);
         activity = launchActivity(
-                getInstrumentation().getTargetContext().getPackageName(),
+                getInstrumentation().getContext().getPackageName(),
                 MockActivity.class, null);
     }
 
@@ -37,6 +37,8 @@ public class LoaderClosetTest extends ActivityUnitTestCase<MockActivity> {
 
     public void testOneshotLoader() throws Throwable {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        Loader loader = new MockOneshotLoader(activity, "success", 100);
 
         runTestOnUiThread(new Runnable() {
             @Override
@@ -121,8 +123,8 @@ public class LoaderClosetTest extends ActivityUnitTestCase<MockActivity> {
                 loaderCloset.registerLoader(
                         new OneShotLoader(activity) {
                             @Override
-                            public LoaderResult loadInBackground(LoaderResult takeOver) {
-                                return success("success");
+                            public void loadInBackground(LoaderResult previousResult) {
+                                success("success");
                             }
                         },
                         new UiThreadReceiver<String, Exception>() {
@@ -705,16 +707,16 @@ public class LoaderClosetTest extends ActivityUnitTestCase<MockActivity> {
         }
 
         @Override
-        public LoaderResult loadInBackground(LoaderResult takeover) {
+        public void loadInBackground(LoaderResult previousResult) {
             try {
                 Thread.sleep(waitTime);
             } catch (Exception e) {
-                return failed(e);
+                failure(e);
             }
             if (exception != null) {
-                return failed(exception);
+                failure(exception);
             } else {
-                return success(result);
+                success(result);
             }
         }
     }
@@ -726,8 +728,8 @@ public class LoaderClosetTest extends ActivityUnitTestCase<MockActivity> {
         }
 
         @Override
-        public LoaderResult loadInBackground(LoaderResult takeover) {
-            return success(10);
+        public void loadInBackground(LoaderResult previousResult) {
+            success(10);
         }
     }
 
@@ -745,12 +747,13 @@ public class LoaderClosetTest extends ActivityUnitTestCase<MockActivity> {
         }
 
         @Override
-        public LoaderResult loadInBackground(LoaderResult takeover) {
+        public void loadInBackground(LoaderResult previousResult) {
             if (exception != null) {
-                return failed(exception);
+                failure(exception);
+            } else {
+                String text = previousResult.getSuccess().toString();
+                success(text + text);
             }
-            String text = takeover.getSuccess().toString();
-            return success(text + text);
         }
     }
 
@@ -774,14 +777,15 @@ public class LoaderClosetTest extends ActivityUnitTestCase<MockActivity> {
         }
 
         @Override
-        public LoaderResult loadInBackground(LoaderResult takeover) {
+        public void loadInBackground(LoaderResult previousResult) {
             if (exception != null) {
                 Exception exception1 = exception;
                 exception = null;
-                return failed(exception1);
+                failure(exception1);
+            } else {
+                times++;
+                success(result + times);
             }
-            times++;
-            return success(result + times);
         }
     }
 
@@ -805,8 +809,8 @@ public class LoaderClosetTest extends ActivityUnitTestCase<MockActivity> {
         }
 
         @Override
-        public LoaderResult loadInBackground(LoaderResult takeOver) {
-            return success("page" + page);
+        public void loadInBackground(LoaderResult previousResult) {
+            success("page" + page);
         }
     }
 }

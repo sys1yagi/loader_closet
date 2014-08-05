@@ -2,25 +2,33 @@ package com.sys1yagi.loadercloset;
 
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
-import android.util.Log;
+
+import java.util.concurrent.CountDownLatch;
 
 public abstract class OneShotLoader<T, U> extends AsyncTaskLoader<LoaderResult<T, U>> {
 
-    private final static String TAG = "Async";
-
     LoaderResult result;
 
-    LoaderResult takeOver;
+    LoaderResult previousResult;
+
+    CountDownLatch countDownLatch;
 
     public OneShotLoader(Context context) {
         super(context);
+        countDownLatch = new CountDownLatch(1);
     }
 
-    abstract public LoaderResult loadInBackground(LoaderResult takeOver);
+    abstract public void loadInBackground(LoaderResult previousResult);
 
     @Override
     public LoaderResult loadInBackground() {
-        return loadInBackground(takeOver);
+        loadInBackground(previousResult);
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            throw new IllegalStateException(e);
+        }
+        return result;
     }
 
     @Override
@@ -33,32 +41,30 @@ public abstract class OneShotLoader<T, U> extends AsyncTaskLoader<LoaderResult<T
     protected void onStartLoading() {
         super.onStartLoading();
         if (result != null) {
-            Log.d(TAG, "deliverResult:" + getId());
             deliverResult(result);
         } else {
-            Log.d(TAG, "forceLoad:" + getId());
             forceLoad();
         }
     }
 
-    protected LoaderResult<T, U> success(T success) {
-        LoaderResult<T, U> result = new LoaderResult<T, U>(getId());
+    protected void success(T success) {
+        result = new LoaderResult<T, U>(getId());
         result.setSuccess(success);
-        return result;
+        countDownLatch.countDown();
     }
 
-    protected LoaderResult<T, U> failed(U failed) {
-        LoaderResult<T, U> result = new LoaderResult<T, U>(getId());
-        result.setFailed(failed);
-        return result;
+    protected void failure(U failure) {
+        result = new LoaderResult<T, U>(getId());
+        result.setFailed(failure);
+        countDownLatch.countDown();
     }
 
-    public LoaderResult getTakeOver() {
-        return takeOver;
+    public LoaderResult getPreviousResult() {
+        return previousResult;
     }
 
-    public void setTakeOver(LoaderResult takeOver) {
-        this.takeOver = takeOver;
+    public void setPreviousResult(LoaderResult previousResult) {
+        this.previousResult = previousResult;
     }
 
     @Override

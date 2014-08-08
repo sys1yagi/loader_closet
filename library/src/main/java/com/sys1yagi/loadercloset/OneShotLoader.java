@@ -71,5 +71,6 @@ public abstract class OneShotLoader<T, U> extends AsyncTaskLoader<LoaderResult<T
     protected void onReset() {
         super.onReset();
         this.result = null;
+        countDownLatch = new CountDownLatch(1);
     }
 }

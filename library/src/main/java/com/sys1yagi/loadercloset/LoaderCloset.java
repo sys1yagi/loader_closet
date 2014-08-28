@@ -8,6 +8,7 @@ import android.util.Pair;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class LoaderCloset implements LoaderManager.LoaderCallbacks<LoaderResult> {
 
@@ -26,7 +27,7 @@ public class LoaderCloset implements LoaderManager.LoaderCallbacks<LoaderResult>
             = new HashMap<Integer, Pair<Loader, UiThreadReceiver>>();
 
     private Map<Integer, Pair<Loader, UiThreadReceiver>> serialLoaders
-            = new HashMap<Integer, Pair<Loader, UiThreadReceiver>>();
+            = new TreeMap<Integer, Pair<Loader, UiThreadReceiver>>();
 
     public LoaderCloset(LoaderManager loaderManager) {
         this.loaderManager = loaderManager;
@@ -61,6 +62,22 @@ public class LoaderCloset implements LoaderManager.LoaderCallbacks<LoaderResult>
             Loader loader = entry.getValue().first;
             loader.reset();
             loader.startLoading();
+        }
+    }
+
+    public void reloadSerialize(UiThreadSerialReceiver receiver) {
+        receiver.clear();
+        uiThreadSerialReceiver = receiver;
+        for (Integer key : serialLoaders.keySet()) {
+            uiThreadSerialReceiver.addSerialLoaderId(key);
+        }
+        int loaderId = receiver.getNextLoaderId();
+        if (serialLoaders.containsKey(loaderId)) {
+            Loader loader = serialLoaders.get(loaderId).first;
+            loader.reset();
+            loader.startLoading();
+        } else {
+            uiThreadSerialReceiver.finishAllLoader();
         }
     }
 

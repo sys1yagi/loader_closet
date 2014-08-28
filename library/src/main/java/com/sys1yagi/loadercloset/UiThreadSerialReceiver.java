@@ -46,4 +46,7 @@ public abstract class UiThreadSerialReceiver {
     public abstract void onLoadFailed(List<Loader> completedLoaders, Loader failLoader,
             LoaderResult fail);
 
+    public void clear() {
+        loaders.clear();
+    }
 }

@@ -37,12 +37,24 @@ public class LoaderCloset implements LoaderManager.LoaderCallbacks<LoaderResult>
         register(loaders, loader, receiver);
     }
 
+    public boolean isRegister(Loader loader) {
+        return loaders.containsKey(loader.getId());
+    }
+
+    public void registerAlreadyRegisteredLoader(Loader loader, UiThreadReceiver receiver) {
+        loaders.put(loader.getId(), new Pair<Loader, UiThreadReceiver>(loader, receiver));
+    }
+
     public void registerLoaderForParallel(Loader loader) {
         register(parallelLoaders, loader, EmptyUiThreadReceiver.getInstance());
     }
 
     public void registerLoaderForSerial(Loader loader) {
         register(serialLoaders, loader, EmptyUiThreadReceiver.getInstance());
+    }
+
+    public void unregisterLoaderForSerial(Loader loader) {
+        serialLoaders.remove(loader.getId());
     }
 
     private void register(Map<Integer, Pair<Loader, UiThreadReceiver>> map, Loader loader,
@@ -117,7 +129,7 @@ public class LoaderCloset implements LoaderManager.LoaderCallbacks<LoaderResult>
         int loaderId = receiver.getNextLoaderId();
         if (serialLoaders.containsKey(loaderId)) {
             Loader oldLoader = loaderManager.getLoader(loaderId);
-            if(oldLoader != null){
+            if (oldLoader != null) {
                 loaderManager.destroyLoader(loaderId);
             }
             Loader loader = serialLoaders.get(loaderId).first;

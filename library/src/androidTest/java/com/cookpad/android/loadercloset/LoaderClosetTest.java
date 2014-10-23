@@ -1,4 +1,4 @@
-package com.sys1yagi.loadercloset;
+package com.cookpad.android.loadercloset;
 
 import android.content.Context;
 import android.support.v4.content.Loader;

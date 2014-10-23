@@ -5,7 +5,7 @@ android {
     buildToolsVersion "19.1.0"
 
     defaultConfig {
-        applicationId "com.sys1yagi.loadercloset.sample"
+        applicationId "com.cookpad.android.loadercloset.sample"
         minSdkVersion 7
         targetSdkVersion 18
         versionCode 1

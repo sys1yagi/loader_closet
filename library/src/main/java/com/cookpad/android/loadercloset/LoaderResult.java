@@ -1,4 +1,4 @@
-package com.sys1yagi.loadercloset;
+package com.cookpad.android.loadercloset;
 
 public class LoaderResult<T, U> {
 

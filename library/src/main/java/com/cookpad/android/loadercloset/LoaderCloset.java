@@ -1,4 +1,4 @@
-package com.sys1yagi.loadercloset;
+package com.cookpad.android.loadercloset;
 
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;

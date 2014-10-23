@@ -1,4 +1,4 @@
-package com.sys1yagi.loadercloset.sample;
+package com.cookpad.android.loadercloset.sample;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

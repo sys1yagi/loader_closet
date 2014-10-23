@@ -1,4 +1,4 @@
-package com.sys1yagi.loadercloset.sample.activities;
+package com.cookpad.android.loadercloset.sample.activities;
 
 import com.sys1yagi.loadercloset.sample.R;
 

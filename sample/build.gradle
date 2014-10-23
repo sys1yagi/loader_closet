@@ -1,5 +1,10 @@
 apply plugin: 'com.android.application'
 
+def VERSION_CODE = 1
+def VERSION_NAME = '1.0.0'
+def GROUP_ID = 'com.cookpad.android'
+def ARTIFACT_ID = 'loadercloset'
+
 android {
     compileSdkVersion 19
     buildToolsVersion "19.1.0"
@@ -8,8 +13,8 @@ android {
         applicationId "com.cookpad.android.loadercloset.sample"
         minSdkVersion 7
         targetSdkVersion 18
-        versionCode 1
-        versionName "1.0"
+        versionCode VERSION_CODE
+        versionName VERSION_NAME
     }
     buildTypes {
         release {
@@ -22,5 +27,15 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:19.+'
+}
 
+apply plugin: 'maven'
+
+uploadArchives {
+    repositories.mavenDeployer {
+        repository(url: 'https://internal-maven.cookpad.com/artifacts')
+        pom.groupId = GROUP_ID
+        pom.artifactId = ARTIFACT_ID
+        pom.version = VERSION_NAME
+    }
 }

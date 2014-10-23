@@ -1,8 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.sys1yagi.loadercloset">
 
-    <application
-            android:label="@string/app_name">
+    <application>
         <!-- for test -->
         <activity android:exported="false" android:name=".MockActivity"
                   android:theme="@style/Theme.AppCompat.Light"/>

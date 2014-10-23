@@ -1,12 +1,11 @@
 package com.cookpad.android.loadercloset.sample.activities;
 
-import com.sys1yagi.loadercloset.sample.R;
+import com.cookpad.android.loadercloset.sample.R;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 
 public class MainActivity extends ActionBarActivity {
 

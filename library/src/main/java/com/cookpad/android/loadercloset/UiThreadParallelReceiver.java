@@ -23,6 +23,9 @@ public abstract class UiThreadParallelReceiver {
     }
 
     void finish(Loader loader, LoaderResult result) {
+        if (counter.isEmpty()) {
+            return;
+        }
         counter.remove(loader);
         loaders.add(loader);
         results.add(result);
